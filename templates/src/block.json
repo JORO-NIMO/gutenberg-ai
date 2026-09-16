@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "create-wp-ai-block/{{BLOCK_SLUG}}",
+  "version": "0.1.0",
+  "title": "{{PLUGIN_NAME}}",
+  "category": "widgets",
+  "icon": "superhero",
+  "description": "An AI block scaffolded by create-wp-ai-block.",
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "prompt": {
+      "type": "string",
+      "default": ""
+    },
+    "response": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "default": "idle"
+    }
+  },
+  "textdomain": "{{BLOCK_SLUG}}",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}
