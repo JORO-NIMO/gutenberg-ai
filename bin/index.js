@@ -114,7 +114,8 @@ async function run() {
 
     // Install dependencies
     console.log(chalk.cyan('\nInstalling dependencies (npm install)...'));
-    execSync('npm install', { cwd: targetDir, stdio: 'inherit' });
+    console.log(chalk.gray('(This usually takes 1-3 minutes because it downloads WordPress Webpack & React build tools)'));
+    execSync('npm install --no-audit --no-fund', { cwd: targetDir, stdio: 'inherit' });
 
     console.log(chalk.green(`\nSuccess! Created ${pluginName} at ${targetDir}`));
     console.log(chalk.cyan('\nInside that directory, you can run several commands:'));
