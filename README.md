@@ -8,9 +8,11 @@ A zero-config CLI tool for scaffolding AI-powered WordPress blocks. It sets up a
 - npm
 - WordPress environment (local or live)
 
-## Installation & Usage
+## 🎉 Now Available on NPM!
 
-You don't need to install this globally. You can use `npx` to run it directly:
+`create-wp-ai-block` is officially published to the NPM registry! You don't need to clone this repository or install anything globally. 
+
+Anyone can scaffold a new AI block anywhere on their computer instantly using `npx`:
 
 ```bash
 npx create-wp-ai-block my-ai-plugin
