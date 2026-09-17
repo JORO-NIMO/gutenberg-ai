@@ -12,7 +12,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		setAttributes( { status: 'loading' } );
 		try {
 			const result = await apiFetch( {
-				path: '/ai-block/v1/generate',
+				path: '/{{BLOCK_SLUG}}/v1/generate',
 				method: 'POST',
 				data: { prompt },
 			} );

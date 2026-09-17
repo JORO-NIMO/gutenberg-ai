@@ -9,4 +9,10 @@
 	padding: 1rem;
 	background: #fff;
 	border-left: 4px solid #007cba;
+	font-style: italic;
+
+	&.status-error {
+		border-left-color: #d63638;
+		color: #d63638;
+	}
 }

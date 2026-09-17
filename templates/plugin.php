@@ -23,7 +23,7 @@ add_action( 'init', '{{FUNCTION_PREFIX}}_block_init' );
  * Register our custom REST API endpoint for fetching AI generations.
  */
 add_action( 'rest_api_init', function () {
-	register_rest_route( 'ai-block/v1', '/generate', array(
+	register_rest_route( '{{BLOCK_SLUG}}/v1', '/generate', array(
 		'methods'  => 'POST',
 		'callback' => '{{FUNCTION_PREFIX}}_generate_ai_response',
 		'permission_callback' => function () {
