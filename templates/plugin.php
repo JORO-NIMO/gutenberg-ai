@@ -12,11 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
+ * Register the block and load its compiled assets from the build directory.
  */
 function {{FUNCTION_PREFIX}}_block_init() {
 	register_block_type( __DIR__ . '/build' );
@@ -24,14 +20,14 @@ function {{FUNCTION_PREFIX}}_block_init() {
 add_action( 'init', '{{FUNCTION_PREFIX}}_block_init' );
 
 /**
- * Register custom REST API endpoint for AI generation
+ * Register our custom REST API endpoint for fetching AI generations.
  */
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'ai-block/v1', '/generate', array(
 		'methods'  => 'POST',
 		'callback' => '{{FUNCTION_PREFIX}}_generate_ai_response',
 		'permission_callback' => function () {
-			// Require the user to be logged in and able to edit posts
+			// Only allow users who can actually write/edit posts to trigger the AI
 			return current_user_can( 'edit_posts' );
 		}
 	) );
@@ -42,7 +38,7 @@ function {{FUNCTION_PREFIX}}_generate_ai_response( WP_REST_Request $request ) {
 	$provider = '{{AI_PROVIDER}}'; 
 	
 	if ( empty( $prompt ) ) {
-		return new WP_Error( 'no_prompt', 'Prompt is required', array( 'status' => 400 ) );
+		return new WP_Error( 'no_prompt', 'Please provide a prompt to generate content.', array( 'status' => 400 ) );
 	}
 
 	$response_text = "Sorry, failed to generate content.";
@@ -50,7 +46,7 @@ function {{FUNCTION_PREFIX}}_generate_ai_response( WP_REST_Request $request ) {
 	if ( $provider === 'openai' ) {
 		$api_key = defined('OPENAI_API_KEY') ? OPENAI_API_KEY : '';
 		if ( empty( $api_key ) ) {
-			return rest_ensure_response( "OpenAI API Key is missing. Returning mock response for: " . $prompt );
+			return new WP_Error( 'missing_key', 'Please define your OPENAI_API_KEY in this file or wp-config.php.', array( 'status' => 400 ) );
 		}
 
 		$body = array(
@@ -86,7 +82,7 @@ function {{FUNCTION_PREFIX}}_generate_ai_response( WP_REST_Request $request ) {
 	} elseif ( $provider === 'gemini' ) {
 		$api_key = defined('GEMINI_API_KEY') ? GEMINI_API_KEY : '';
 		if ( empty( $api_key ) ) {
-			return rest_ensure_response( "Gemini API Key is missing. Returning mock response for: " . $prompt );
+			return new WP_Error( 'missing_key', 'Please define your GEMINI_API_KEY in this file or wp-config.php.', array( 'status' => 400 ) );
 		}
 
 		$body = array(
