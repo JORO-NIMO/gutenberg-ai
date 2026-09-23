@@ -1,6 +1,6 @@
 {
   "name": "create-wp-ai-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-auth scaffolding CLI tool for creating WordPress AI blocks.",
   "main": "bin/index.js",
   "bin": {

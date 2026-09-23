@@ -16,17 +16,27 @@ program
 
 const options = program.opts();
 let projectName = program.args[0];
+let projectTitle = '';
 
 async function run() {
   if (!projectName) {
-    const response = await prompts({
-      type: 'text',
-      name: 'name',
-      message: 'What is the name of your WP AI Block project?',
-      initial: 'my-ai-block',
-      validate: (value) => (value.match(/^[a-z0-9\-]+$/) ? true : 'Project name may only contain lowercase letters, numbers, and dashes.')
-    });
-    projectName = response.name;
+    const nameResponse = await prompts([
+      {
+        type: 'text',
+        name: 'slug',
+        message: 'What is the slug of your WP AI Block project (folder name)?',
+        initial: 'my-ai-block',
+        validate: (value) => (value && value.match(/^[a-z0-9\-]+$/) ? true : 'Project slug may only contain lowercase letters, numbers, and dashes.')
+      },
+      {
+        type: 'text',
+        name: 'title',
+        message: 'What is the display title of your block plugin?',
+        initial: (prev) => prev ? prev.split('-').map(word => word.toLowerCase() === 'ai' ? 'AI' : word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'My AI Block'
+      }
+    ]);
+    projectName = nameResponse.slug;
+    projectTitle = nameResponse.title;
   }
 
   if (!projectName) {
@@ -42,7 +52,7 @@ async function run() {
       message: 'Which AI integration would you like to use?',
       choices: [
         { title: 'OpenAI (GPT-4o-mini)', value: 'openai' },
-        { title: 'Google Gemini (gemini-1.5-flash)', value: 'gemini' }
+        { title: 'Google Gemini (Flash models with auto-failover)', value: 'gemini' }
       ]
     });
     provider = aiChoice.provider;
@@ -67,12 +77,12 @@ async function run() {
     await fs.copy(templateDir, targetDir);
 
     // Dynamic String Replacements
-    const pluginName = projectName
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    const blockSlug = projectName.toLowerCase().replace(/[^a-z0-9\-]/g, '-');
+    const pluginName = projectTitle || projectName
+      .split(/[-_ ]+/)
+      .map(word => word.toLowerCase() === 'ai' ? 'AI' : word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
     
-    const blockSlug = projectName;
     const functionPrefix = blockSlug.replace(/-/g, '_');
 
     const replaceInFile = async (filePath, replacements) => {
@@ -94,7 +104,9 @@ async function run() {
       path.join(targetDir, 'src/block.json'),
       path.join(targetDir, 'src/edit.js'),
       path.join(targetDir, 'src/index.js'),
-      path.join(targetDir, 'src/save.js')
+      path.join(targetDir, 'src/save.js'),
+      path.join(targetDir, 'src/editor.scss'),
+      path.join(targetDir, 'src/style.scss')
     ];
 
     const replacements = {

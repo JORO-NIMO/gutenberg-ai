@@ -1,5 +1,25 @@
-.wp-block-create-wp-ai-block {
-	padding: 1rem;
-	border: 1px solid #eee;
-	border-radius: 4px;
+.wp-block-create-wp-ai-block-{{BLOCK_SLUG}},
+.ai-block-output {
+	padding: 1.25rem;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	background: #ffffff;
+
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	p {
+		margin-bottom: 0.75rem;
+	}
+
+	ul, ol {
+		padding-left: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	li {
+		margin-bottom: 0.25rem;
+	}
 }
