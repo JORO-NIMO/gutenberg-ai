@@ -1,78 +1,142 @@
 # create-wp-ai-block
 
-A zero-config CLI tool for scaffolding AI-powered WordPress blocks. It sets up a fully functional Gutenberg block plugin that connects directly to AI APIs like OpenAI or Google Gemini out of the box.
+[![npm version](https://img.shields.io/npm/v/create-wp-ai-block.svg)](https://www.npmjs.com/package/create-wp-ai-block)
+[![License: GPL-2.0](https://img.shields.io/badge/License-GPL--2.0-blue.svg)](LICENSE)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org/)
 
-## Requirements
+> A zero-config CLI scaffolding tool for building production-ready, AI-powered Gutenberg block plugins for WordPress. Seamlessly integrates with Google Gemini (with automated multi-model failover) and OpenAI (GPT-4o-mini).
 
-- Node.js
-- npm
-- WordPress environment (local or live)
+---
 
-## 🎉 Now Available on NPM!
+## 🚀 Quick Start (via NPX)
 
-`create-wp-ai-block` is officially published to the NPM registry! You don't need to clone this repository or install anything globally. 
-
-Anyone can scaffold a new AI block anywhere on their computer instantly using `npx`:
+No installation required! Scaffold a new AI WordPress block anywhere using `npx`:
 
 ```bash
 npx create-wp-ai-block my-ai-plugin
 ```
 
-If you prefer to install it globally:
+Or install globally:
 
 ```bash
 npm install -g create-wp-ai-block
 create-wp-ai-block my-ai-plugin
 ```
 
-### Setup Process
+---
 
-1. When you run the command, it will ask you for a project slug and display title (if you didn't provide one).
-2. It will prompt you to select an AI provider:
-   - **OpenAI (GPT-4o-mini)**
-   - **Google Gemini (Flash models with multi-model auto-failover)**
-3. The CLI will generate a complete WordPress block plugin inside a new folder matching your project name, replace all placeholders, and install the necessary dependencies via `npm install`.
+## ✨ What's New & Upgraded
 
-## ✨ Features
+### 1. 🛡️ Markdown-to-HTML Conversion (No Raw `**` or `##`)
+- **Semantic Formatting**: AI responses are automatically transformed from raw Markdown into clean, semantic HTML elements (`<h2>`, `<h3>`, `<p>`, `<strong>`, `<em>`, `<ul>`, `<li>`).
+- **Gutenberg RichText Native**: Eliminates unrendered markdown symbols (`**`, `##`, `*`) so content displays cleanly and can be styled, edited, and formatted directly inside Gutenberg's `<RichText>`.
 
-- **In-Block Canvas & Sidebar Controls**: Interactive UI directly inside the editor canvas with quick prompt suggestion chips, progress indicators, clear button, and inspector sidebar controls.
-- **Clean HTML Formatting (No Raw Markdown)**: AI output is automatically converted to semantic HTML (`<p>`, `<h3>`, `<strong>`, `<ul>`, `<li>`), ensuring no raw `**` or `##` markdown characters appear in Gutenberg.
-- **Name & Entity Preservation**: Strict system instructions ensure all specific names, brands, titles, and entities in the prompt are preserved without alteration.
-- **Multi-Model Auto-Failover (Gemini)**: Cascades through `gemini-3.6-flash`, `gemini-3.5-flash`, `gemini-3.7-flash`, and `gemini-flash-latest` so your block never fails during temporary provider demand spikes.
-- **Local Dev Friendly**: Built-in SSL verification bypass for local environments (XAMPP, LocalWP, Docker, Windows, macOS, Linux).
+### 2. 🏷️ Strict Name & Entity Preservation
+- **Accurate Branding**: Integrated system instructions direct the AI model to faithfully retain all proper nouns, brand names, product names, titles, and custom entities from your prompt without swapping or altering them.
+- **Smart Title Formatting**: The CLI intelligently preserves uppercase abbreviations (e.g., formatting `my-ai-block` into `My AI Block` instead of `My Ai Block`) and prompts for both slug and display title.
 
-## Using the Scaffolded Plugin
+### 3. ⚡ Multi-Model Resilience & Auto-Failover (Google Gemini)
+- **High Demand Protection**: When Google Gemini experiences temporary demand spikes (`HTTP 503: Spikes in demand`), the plugin automatically cascades through a resilient fallback pool:
+  1. `gemini-3.6-flash` (Flagship fast modern model)
+  2. `gemini-3.5-flash`
+  3. `gemini-3.7-flash` (Advanced reasoning)
+  4. `gemini-3.5-flash-lite` (Lightweight instant response)
+  5. `gemini-flash-latest`
+- **Zero Interruption**: Fallbacks execute in milliseconds on the server side without throwing 500 errors to the editor canvas.
 
-After the scaffolding finishes, navigate into your new project folder:
+### 4. 💻 Local Development Friendly (cURL / SSL Handshake Fix)
+- **Zero-Friction Local Testing**: Integrated `'sslverify' => false` and 60-second timeouts for `wp_remote_post`. Eliminates the common `cURL error 60: SSL certificate problem` encountered on local environments such as **XAMPP**, **LocalWP**, **MAMP**, and **Docker**.
 
-```bash
-cd my-ai-plugin
+### 5. 🎨 Interactive In-Block Canvas & Inspector UI
+- **Canvas-First Workflow**: Control your AI generation directly inside the block on the editor canvas—no need to constantly open and close the sidebar.
+- **Quick Prompt Chips**: 1-click example chips (`Try an example:`) for testing and demonstration.
+- **Live Status Badges**: Clear visual badges (`🤖 My AI Block`, `✓ Generated`, `Generating...`, `⚠ Error Notice`).
+- **Full Inspector Controls**: Sidebar settings remain available for traditional WordPress workflows.
+
+---
+
+## 📁 Scaffolded Project Structure
+
+```text
+my-ai-plugin/
+├── my-ai-plugin.php       # Main plugin file with REST API route (/my-ai-plugin/v1/generate)
+├── package.json           # Scripts and @wordpress/scripts dependencies
+├── src/
+│   ├── block.json         # Block metadata, attributes, and styles declaration
+│   ├── index.js           # Block registration entrypoint
+│   ├── edit.js            # In-block interactive canvas & sidebar UI
+│   ├── save.js            # Frontend markup renderer
+│   ├── editor.scss        # Modern editor canvas styling
+│   └── style.scss         # Frontend typography & container styling
+└── build/                 # Compiled assets (generated via npm run build)
 ```
 
-1. **Build the block assets**:
-   ```bash
-   npm run build
-   ```
-   *Note: Use `npm start` while developing to automatically recompile your code when you save.*
+---
 
-2. **Add to WordPress**:
-   Copy the `my-ai-plugin` folder into your WordPress `wp-content/plugins/` directory.
+## 🛠️ Step-by-Step Usage
 
-3. **Activate the Plugin**:
-   Log into your WordPress admin dashboard, go to Plugins, and activate it.
+### 1. Scaffold the Plugin
+Run the CLI tool and follow the interactive prompts:
+```bash
+npx create-wp-ai-block my-ai-plugin
+```
+Choose your preferred AI integration:
+- **Google Gemini** (Recommended, multi-model failover)
+- **OpenAI** (GPT-4o-mini)
 
-4. **Add your API Key**:
-   Open the main plugin PHP file (e.g., `my-ai-plugin.php`) or your `wp-config.php` and add your API key for the provider you chose. For example:
-   ```php
-   // If using OpenAI:
-   define( 'OPENAI_API_KEY', 'your-actual-api-key-here' );
+### 2. Build Block Assets
+Navigate into your newly scaffolded plugin directory:
+```bash
+cd my-ai-plugin
+npm run build
+```
+> **Tip**: Run `npm start` while developing to automatically watch and compile changes in real time.
 
-   // If using Google Gemini:
-   define( 'GEMINI_API_KEY', 'your-actual-api-key-here' );
-   ```
+### 3. Add to WordPress
+Copy or symlink your plugin folder into your WordPress plugins directory:
+```text
+wp-content/plugins/my-ai-plugin/
+```
 
-5. **Test it out**:
-   Open any post or page, insert your new block from the block inserter, enter a prompt (or click one of the quick suggestions), hit **Generate AI Content**, and see the formatted content appear right in the block!
+### 4. Activate in Dashboard
+1. Open your WordPress admin dashboard (`wp-admin`).
+2. Go to **Plugins** → **Installed Plugins**.
+3. Locate **My AI Block** and click **Activate**.
 
-## License
-GPL-2.0
+### 5. Configure Your API Key
+Open your `wp-config.php` or the main plugin PHP file (`my-ai-plugin.php`) and define your API key:
+
+```php
+// If you selected Google Gemini:
+define( 'GEMINI_API_KEY', 'your-gemini-api-key-here' );
+
+// If you selected OpenAI:
+define( 'OPENAI_API_KEY', 'your-openai-api-key-here' );
+```
+
+### 6. Test Your Block
+1. Create or edit any WordPress post or page in the Gutenberg editor.
+2. Click the **+** (Block Inserter) and search for your block name (e.g., **My AI Block**).
+3. Insert the block, choose a quick suggestion chip or type your prompt, and hit **✨ Generate AI Content**.
+4. Watch the clean, formatted HTML render directly into the block!
+
+---
+
+## 🔒 Security & Performance
+- **Capability Checks**: The REST API generation endpoint requires `edit_posts` capabilities (`current_user_can('edit_posts')`), ensuring public visitors cannot trigger AI calls.
+- **Sanitized Inputs**: All user prompts are sanitized via `sanitize_text_field()`.
+- **Zero Leaked Keys**: API keys are defined server-side in PHP/`wp-config.php` and are never exposed in JavaScript or frontend bundles.
+
+---
+
+## 👤 Author
+
+Developed with ❤️ by **Joronimo Amanya** ([@JORO-NIMO](https://github.com/JORO-NIMO)).
+
+- **GitHub**: [https://github.com/JORO-NIMO/gutenberg-ai](https://github.com/JORO-NIMO/gutenberg-ai)
+- **NPM Package**: [https://www.npmjs.com/package/create-wp-ai-block](https://www.npmjs.com/package/create-wp-ai-block)
+
+---
+
+## 📄 License
+This project is licensed under the [GPL-2.0](LICENSE) license.
