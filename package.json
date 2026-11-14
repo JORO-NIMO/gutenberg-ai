@@ -6,8 +6,15 @@
   "bin": {
     "create-wp-ai-block": "bin/index.js"
   },
+  "files": [
+    "bin",
+    "templates",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/scaffold.test.js"
   },
   "dependencies": {
     "chalk": "^4.1.2",
@@ -16,5 +23,5 @@
     "prompts": "^2.4.2"
   },
   "author": "JORO-NIMO",
-  "license": "GPL-2.0"
+  "license": "GPL-2.0-or-later"
 }

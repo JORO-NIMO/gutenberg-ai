@@ -23,6 +23,14 @@
     "status": {
       "type": "string",
       "default": "idle"
+    },
+    "tone": {
+      "type": "string",
+      "default": "professional"
+    },
+    "temperature": {
+      "type": "number",
+      "default": 0.7
     }
   },
   "textdomain": "{{BLOCK_SLUG}}",

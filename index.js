@@ -2,13 +2,15 @@ const { join } = require('path');
 
 module.exports = {
   defaultValues: {
-    namespace: 'ai-workshop',
-    pluginURI: 'https://jinja.wordcamp.org/2026/speaker/joronimo-amanya/',
+    namespace: 'ai-block',
     version: '1.0.0',
-    category: 'text',
+    category: 'widgets',
     attributes: {
       prompt: { type: 'string', default: '' },
-      content: { type: 'string', default: '' }
+      response: { type: 'string', default: '' },
+      status: { type: 'string', default: 'idle' },
+      tone: { type: 'string', default: 'professional' },
+      temperature: { type: 'number', default: 0.7 }
     }
   },
   templatesPath: join(__dirname, 'templates'),

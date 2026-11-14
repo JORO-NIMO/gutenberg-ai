@@ -1,12 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
-import { PanelBody, TextareaControl, Button, Spinner, Notice } from '@wordpress/components';
+import { PanelBody, TextareaControl, SelectControl, RangeControl, Button, Spinner, Notice } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { prompt, response, status } = attributes;
+	const { prompt, response, status, tone = 'professional', temperature = 0.7 } = attributes;
 
 	const generateAI = async () => {
 		if ( ! prompt || ! prompt.trim() ) {
@@ -18,7 +18,11 @@ export default function Edit( { attributes, setAttributes } ) {
 			const result = await apiFetch( {
 				path: '/{{BLOCK_SLUG}}/v1/generate',
 				method: 'POST',
-				data: { prompt: prompt.trim() },
+				data: {
+					prompt: prompt.trim(),
+					tone,
+					temperature,
+				},
 			} );
 			
 			// result is returned as clean, formatted HTML by our PHP endpoint
@@ -49,7 +53,31 @@ export default function Edit( { attributes, setAttributes } ) {
 						help={ __( 'Enter instructions for the AI to generate content.', '{{BLOCK_SLUG}}' ) }
 						rows={ 4 }
 					/>
-					<div style={ { marginTop: '10px' } }>
+
+					<SelectControl
+						label={ __( 'Content Tone', '{{BLOCK_SLUG}}' ) }
+						value={ tone }
+						options={ [
+							{ label: __( 'Professional', '{{BLOCK_SLUG}}' ), value: 'professional' },
+							{ label: __( 'Casual & Friendly', '{{BLOCK_SLUG}}' ), value: 'casual' },
+							{ label: __( 'Inspiring & Engaging', '{{BLOCK_SLUG}}' ), value: 'inspiring' },
+							{ label: __( 'Technical & Precise', '{{BLOCK_SLUG}}' ), value: 'technical' },
+							{ label: __( 'Concise Summary', '{{BLOCK_SLUG}}' ), value: 'concise' },
+						] }
+						onChange={ ( val ) => setAttributes( { tone: val } ) }
+					/>
+
+					<RangeControl
+						label={ __( 'Creativity (Temperature)', '{{BLOCK_SLUG}}' ) }
+						value={ temperature }
+						onChange={ ( val ) => setAttributes( { temperature: val } ) }
+						min={ 0.1 }
+						max={ 1.5 }
+						step={ 0.1 }
+						help={ __( 'Lower values produce focused responses; higher values produce more creative output.', '{{BLOCK_SLUG}}' ) }
+					/>
+
+					<div style={ { marginTop: '14px' } }>
 						<Button 
 							variant="primary"
 							onClick={ generateAI }
